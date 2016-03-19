@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,9 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SpriterDotNet</RootNamespace>
     <AssemblyName>SpriterDotNet</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,6 +27,11 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -55,9 +58,43 @@
     <Compile Include="SpriterProcessor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Linux - Release|x86' ">
+    <OutputPath>bin\Linux\Release\</OutputPath>
+    <DefineConstants>LINUX;MONOGAME;USE_STEAMWORKS;</DefineConstants>
+    <Optimize>True</Optimize>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="cp -rv &quot;$(TargetDir)*.dll&quot; &quot;$(TargetDir)..\..\..\SpriterDotNet.Unity\Assets\SpriterDotNet\Lib&quot;" workingdir="${SolutionDir}" externalConsole="True" />
+        <Command type="AfterBuild" command="cp -rv &quot;$(TargetDir)*.pdb&quot; &quot;$(TargetDir)..\..\..\SpriterDotNet.Unity\Assets\SpriterDotNet\Lib&quot;" workingdir="${SolutionDir}" externalConsole="True" />
+      </CustomCommands>
+    </CustomCommands>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'OSX - Release|x86' ">
+    <OutputPath>bin\Linux\Release\</OutputPath>
+    <DefineConstants>LINUX;MONOGAME;USE_STEAMWORKS;</DefineConstants>
+    <Optimize>True</Optimize>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="cp -rv &quot;$(TargetDir)*.dll&quot; &quot;$(TargetDir)..\..\..\SpriterDotNet.Unity\Assets\SpriterDotNet\Lib&quot;" workingdir="${SolutionDir}" externalConsole="True" />
+        <Command type="AfterBuild" command="cp -rv &quot;$(TargetDir)*.pdb&quot; &quot;$(TargetDir)..\..\..\SpriterDotNet.Unity\Assets\SpriterDotNet\Lib&quot;" workingdir="${SolutionDir}" externalConsole="True" />
+      </CustomCommands>
+    </CustomCommands>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows - Debug|x86' ">
     <PostBuildEvent>copy /Y "$(TargetDir)*.dll" "$(TargetDir)..\..\..\SpriterDotNet.Unity\Assets\SpriterDotNet\Lib"
 copy /Y "$(TargetDir)*.pdb" "$(TargetDir)..\..\..\SpriterDotNet.Unity\Assets\SpriterDotNet\Lib"</PostBuildEvent>
+    <OutputPath>bin\Windows - Debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Windows - Release|x86' ">
+    <PostBuildEvent>copy /Y "$(TargetDir)*.dll" "$(TargetDir)..\..\..\SpriterDotNet.Unity\Assets\SpriterDotNet\Lib"
+copy /Y "$(TargetDir)*.pdb" "$(TargetDir)..\..\..\SpriterDotNet.Unity\Assets\SpriterDotNet\Lib"</PostBuildEvent>
+    <OutputPath>bin\Windows - Release</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
