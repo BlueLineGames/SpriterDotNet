@@ -52,6 +52,7 @@ namespace SpriterDotNet
         /// For example:<para />
         /// 0.5f corresponds to 50% of the default speed<para />
         /// 2.0f corresponds to 200% of the default speed<para />
+        /// -1.0f plays the animation at default speed, in reverse<para />
         /// </summary>
         public float Speed { get; set; }
 
