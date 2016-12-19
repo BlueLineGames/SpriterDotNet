@@ -91,7 +91,7 @@ namespace SpriterDotNet
 
         private readonly IDictionary<string, SpriterAnimation> animations;
         private readonly IDictionary<int, IDictionary<int, TSprite>> sprites = new Dictionary<int, IDictionary<int, TSprite>>();
-        private readonly IDictionary<TSprite, TSprite> swappedSprites = new Dictionary<TSprite, TSprite>();
+        private readonly IDictionary<Tuple<int, int>, TSprite> swappedSprites = new Dictionary<Tuple<int, int>, TSprite>();
         private readonly IDictionary<int, IDictionary<int, TSound>> sounds = new Dictionary<int, IDictionary<int, TSound>>();
         private float totalTransitionTime;
         private float transitionTime;
@@ -241,7 +241,11 @@ namespace SpriterDotNet
                 int fileId;
                 if (!GetSpriteIds(info, out folderId, out fileId)) continue;
                 TSprite obj = GetFromDict(folderId, fileId, sprites);
-                obj = GetSwappedSprite(obj);
+                TSprite swapped;
+                if(TryGetSwappedSprite(Tuple.Create(folderId, fileId), out swapped))
+                {
+                    obj = swapped;
+                }
                 ApplySpriteTransform(obj, info);
             }
 
@@ -299,28 +303,34 @@ namespace SpriterDotNet
         }
 
         /// <summary>
-        /// Remove a manually swapped sprite by name
+        /// Remove a manually swapped sprite by folder/file id
         /// </summary>
-        public void UnswapSprite(TSprite original)
+        public void UnswapSprite(Tuple<int, int> key)
         {
-            if (swappedSprites.ContainsKey(original)) swappedSprites.Remove(original);
+            if (swappedSprites.ContainsKey(key)) swappedSprites.Remove(key);
         }
 
         /// <summary>
-        /// Swap one sprite for another, pass the name of the spriter piece you'd like to target, and a Sprite instance to replace it with.
+        /// Swap one sprite for another, pass the folder/file id of the spriter piece you'd like to target, and a Sprite instance to replace it with.
         /// </summary>
-        public void SwapSprite(TSprite original, TSprite replacement)
+        public void SwapSprite(Tuple<int, int> key, TSprite replacement)
         {
-            swappedSprites[original] = replacement;
+            swappedSprites[key] = replacement;
         }
 
         /// <summary>
         /// Internal function to lookup swapped sprites.
         /// </summary>
-        private TSprite GetSwappedSprite(TSprite original)
+        private bool TryGetSwappedSprite(Tuple<int, int> key, out TSprite swapped)
         {
-            if (swappedSprites.ContainsKey(original)) return swappedSprites[original];
-            return original;
+            bool found = false;
+            swapped = default(TSprite);
+            if (swappedSprites.ContainsKey(key))
+            {
+                swapped = swappedSprites[key];
+                found = true;
+            }
+            return found;
         }
 
         /// <summary>
